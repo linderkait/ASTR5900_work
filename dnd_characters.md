@@ -2,23 +2,23 @@
 # Name: Shade Everglade
 * Race: Wood Elf
 * Class: Rogue
-* Subclass: 
+* Subclass: Soulknife
 * Background: 
 
 # Name: Klemmut Dargel
 * Race: Rock Gnome
 * Class: Wizard
-* Subclass: 
+* Subclass: Order of Scribes
 * Background: 
 
 # Name: Ra
 * Race: Kalashtar
 * Class: Warlock
-* Subclass: 
+* Subclass: Archfey
 * Background: 
 
 # Name: Gideon Drake
 * Race: Variant Human
 * Class: Sorcerer
-* Subclass: 
+* Subclass: Dreamwalker (homebrew)
 * Background: 
