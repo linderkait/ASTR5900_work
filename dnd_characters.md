@@ -3,22 +3,22 @@
 * Race: Wood Elf
 * Class: Rogue
 * Subclass: Soulknife
-* Background: 
+* Background: Criminal
 
 # Name: Klemmut Dargel
 * Race: Rock Gnome
 * Class: Wizard
 * Subclass: Order of Scribes
-* Background: 
+* Background: Sage
 
 # Name: Ra
 * Race: Kalashtar
 * Class: Warlock
 * Subclass: Archfey
-* Background: 
+* Background: Sage
 
 # Name: Gideon Drake
 * Race: Variant Human
 * Class: Sorcerer
-* Subclass: Dreamwalker (homebrew)
-* Background: 
+* Subclass: Dreamwalker (Homebrew)
+* Background: Variant Human
