@@ -1,24 +1,24 @@
 ## DND Characters
 # Name: Shade Everglade
 * Race: Wood Elf
-* Class: 
+* Class: Rogue
 * Subclass: 
 * Background: 
 
 # Name: Klemmut Dargel
 * Race: Rock Gnome
-* Class: 
+* Class: Wizard
 * Subclass: 
 * Background: 
 
 # Name: Ra
 * Race: Kalashtar
-* Class: 
+* Class: Warlock
 * Subclass: 
 * Background: 
 
 # Name: Gideon Drake
 * Race: Variant Human
-* Class: 
+* Class: Sorcerer
 * Subclass: 
 * Background: 
