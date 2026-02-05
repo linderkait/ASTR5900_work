@@ -74,6 +74,9 @@ def p3eqn(x):
 p3xdata = np.arange(11)
 p3ydata = p3eqn(p3xdata)
 
+
+
+
 #part a
 #create the interpolation using the two methods
 p3x = np.linspace(p3xdata[0], p3xdata[-1], 100)
@@ -89,5 +92,27 @@ plt.scatter(p3xdata, p3ydata, label="origional data")
 plt.xlabel("x")
 plt.ylabel("y")
 plt.title("Sin Interpolation")
+plt.legend()
+plt.show()
+
+
+
+#part b
+#create the relative error equation
+true = p3eqn(p3x)
+
+def rel_err(test, true):
+    return (test-true) / true
+
+#calculate the relative error for each function
+rel_piece = rel_err(p3y, true)
+rel_csp = rel_err(p3y_csp, true)
+
+#plot the relative error for each
+plt.scatter(p3x, rel_csp, label="cubic spline", alpha = 0.5)
+plt.scatter(p3x, rel_piece, label="piecewise", alpha = 0.5)
+plt.xlabel("x")
+plt.ylabel("y")
+plt.title("Relative Error")
 plt.legend()
 plt.show()
