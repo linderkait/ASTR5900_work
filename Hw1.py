@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import scipy as sp
 
 #Problem 2
 #Part a
@@ -41,5 +42,23 @@ plt.scatter(x, y, label="test points", alpha = 0.5)
 plt.xlabel("x")
 plt.ylabel("y")
 plt.title("Piecewise Interpolation")
+plt.legend()
+plt.show()
+
+
+
+#Part b
+
+#Use the scipy code with variables defined in part a to interpolate
+csp = sp.interpolate.CubicSpline(xdata,ydata)
+y_csp = csp(x)
+
+#plot the results against eachother
+plt.scatter(xdata, ydata, label="origional data")
+plt.scatter(x, y_csp, label="cubic spline", alpha = 0.5)
+plt.scatter(x, y, label="piecewise", alpha = 0.5)
+plt.xlabel("x")
+plt.ylabel("y")
+plt.title("Two ways of Interpolation")
 plt.legend()
 plt.show()
