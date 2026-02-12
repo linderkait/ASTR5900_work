@@ -78,3 +78,58 @@ f = lambda x: x**3 - 7 * x**2 + 14 * x - 5
 #test the bisection function
 root, interval = bisection(f, 1, 0, 1E-8)
 
+
+
+#Create a Newton-Raphson function
+def NewtRaph(func, deriv, x0, tol):
+    #inputs are the function you want the root of (func), the derivative of this function(deriv)
+    #the initial guess (x0) and the toerance of the relative error (tol)
+    #will return the x location of the root followed by how many iterations
+
+    #define the iterations
+    i = 0
+
+    #make sure the root hasn't been reached already
+    if func(x0) == 0:
+        return x0, i
+ 
+    #calculate delta x
+    delx = func(x0)/deriv(x0)
+
+    i += 1
+    #calculate a new guess for the root
+    xr = x0 - delx
+        
+    print(f'Iteration: {i}, root guess: {xr:.3g}')
+    delx = func(xr)/deriv(xr)
+
+    #calculate error
+    rel_err = abs(delx/xr)
+
+    #create the loop to loop over root finding
+    while rel_err > tol:
+        print(f'Tolerance not met. relative error: {rel_err:.3g}')
+        i += 1
+        #calculate a new guess for the root
+        xr = xr - delx
+        
+        print(f'Iteration: {i}, root guess: {xr:.3g}')
+        delx = func(xr)/deriv(xr)
+        
+        rel_err = abs(delx/xr)
+
+        #create an out if it gets stuck
+        if i > 100:
+            print('No root found. Try a new initial guess.')
+            return
+
+    else:
+        print(f'Tolerance met! relative error: {rel_err:.3g}')
+        return xr, i
+    
+
+#Define the derivative for the origional function
+fprime = lambda x: 3 * x**2 - 14 * x + 14
+
+#test the Newton-Raphson function
+NewtRaph(f, fprime, 0, 1E-8)
