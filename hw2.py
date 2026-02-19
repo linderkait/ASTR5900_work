@@ -1,5 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
 
 #create the bisection function
 def bisection(func, x0, x1, tol):
