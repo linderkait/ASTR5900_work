@@ -133,3 +133,17 @@ fprime = lambda x: 3 * x**2 - 14 * x + 14
 
 #test the Newton-Raphson function
 NewtRaph(f, fprime, 0, 1E-8)
+
+
+
+#Problem 3
+#Define keplers equation
+def kepler(E):
+    #define variables (can be changed)
+    return E - ec * np.sin(E) - M
+
+ec = 0.9    #eccentricity
+M = 3    #mean anomoly
+
+#find the root
+bisection(kepler, -3, 5, 1E-8)
