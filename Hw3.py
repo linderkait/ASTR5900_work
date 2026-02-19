@@ -1,5 +1,5 @@
 import numpy as np
-import matplotlib.pyplot
+import matplotlib.pyplot as plt
 
 #Problem 1
 
@@ -26,9 +26,9 @@ def euler(f, xi, xf, yi, n):
 
 
 #test the euler code
-testeu = euler(p1, 0, 1, 0, 5) 
+testeu = euler(p1, 0, 1, 0, 1) 
 true = np.tan(1)
-print(f'The value from the euler method is {testeu:.5g} and the true value is {true:.5g}')
+print(f'The value from the euler method is {testeu:.10g} and the true value is {true:.10g}')
 
 
 
@@ -56,5 +56,15 @@ def RK4(f, xi, xf, yi, n):
 
 
 #test the RK code
-testRK = RK4(p1, 0, 1, 0, 5)
-print(f'The value from the RK4 method is {testRK:.5g} and the true value is {true:.5g}')
+testRK = RK4(p1, 0, 1, 0, 1)
+print(f'The value from the RK4 method is {testRK:.10g} and the true value is {true:.10g}')
+
+
+
+#Part b
+x = np.linspace(-4, 4, 1000)
+y = np.tan(x)
+plt.plot(x, y)
+plt.xlabel('x')
+plt.ylabel('y')
+plt.show()
