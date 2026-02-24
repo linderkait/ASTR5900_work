@@ -1,6 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+#adjust global plot font size
+plt.rcParams['font.size'] = 14
+
 #Problem 1
 
 #define the function to use in this part
@@ -64,6 +67,7 @@ print(f'The value from the RK4 method is {testRK:.10g} and the true value is {tr
 #Part b
 x = np.linspace(-4, 4, 1000)
 y = np.tan(x)
+
 plt.plot(x, y)
 plt.xlabel('x')
 plt.ylabel('y')
@@ -106,3 +110,27 @@ print(f'The difference between the two highest resolution cases for Euler is: {a
 print(f'The difference between the two highest resolution cases for RK4 is: {abs(RKdiff[-2]):.5g}')
 print(f'The difference between the highest resolution and true values for Euler is: {abs(Eufinal - true):.5g}')
 print(f'The difference between the highest resolution and true values for RK4 is: {abs(RKfinal - true):.5g}')
+
+
+
+#Problem 2
+
+#define the equation
+def p2(v):
+    #define constants using protons for mass
+    m = 1.67262192e-27
+    k = 1.380649e-23
+    T = 10000
+    f = ((m / (2 * np.pi * k * T)) ** (3 / 2)) * (4 * np.pi * v ** 2) * np.exp(-((m * v ** 2) / (2 * k * T)))
+    return f
+
+#Part a
+#define velocity array and probability density array
+v = np.linspace(0, 4e4, 100)
+f = p2(v)
+
+#plot the distribution
+plt.plot(v, f)
+plt.xlabel('v(m/s)')
+plt.ylabel('f(v)')
+plt.show()
