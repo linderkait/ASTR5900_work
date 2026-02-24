@@ -26,7 +26,7 @@ def euler(f, xi, xf, yi, n):
 
 
 #test the euler code
-testeu = euler(p1, 0, 1, 0, 1) 
+testeu = euler(p1, 0, 1, 0, 5) 
 true = np.tan(1)
 print(f'The value from the euler method is {testeu:.10g} and the true value is {true:.10g}')
 
@@ -56,7 +56,7 @@ def RK4(f, xi, xf, yi, n):
 
 
 #test the RK code
-testRK = RK4(p1, 0, 1, 0, 1)
+testRK = RK4(p1, 0, 1, 0, 5)
 print(f'The value from the RK4 method is {testRK:.10g} and the true value is {true:.10g}')
 
 
@@ -68,3 +68,41 @@ plt.plot(x, y)
 plt.xlabel('x')
 plt.ylabel('y')
 plt.show()
+
+
+
+#Part d
+#define a range of step sizes over a few magnitudes
+narr = np.logspace(0, 3, 50)
+harr = 1/narr
+
+#define the highest resolution case
+Eufinal = euler(p1, 0, 1, 0, narr[-1]) 
+RKfinal = RK4(p1, 0, 1, 0, narr[-1])
+
+#calculate the predicted y with each step size
+Eudiff = np.array([])
+RKdiff = np.array([])
+
+for i in narr:
+    Eu = euler(p1, 0, 1, 0, i) 
+    RK = RK4(p1, 0, 1, 0, i)
+
+    Eudiff = np.append(Eudiff, Eufinal - Eu)
+    RKdiff = np.append(RKdiff, RKfinal - RK)
+
+#plot the results
+plt.loglog(harr, abs(Eudiff), label = 'Euler')
+plt.loglog(harr, abs(RKdiff), label = 'Runge-Kutta')
+plt.xlabel('log(step size)')
+plt.ylabel('log(|highest res - predicted|)')
+plt.legend()
+plt.show()
+
+
+#Part e
+#find the difference between the two highest resolution cases and compare
+print(f'The difference between the two highest resolution cases for Euler is: {abs(Eudiff[-2]):.5g}')
+print(f'The difference between the two highest resolution cases for RK4 is: {abs(RKdiff[-2]):.5g}')
+print(f'The difference between the highest resolution and true values for Euler is: {abs(Eufinal - true):.5g}')
+print(f'The difference between the highest resolution and true values for RK4 is: {abs(RKfinal - true):.5g}')
