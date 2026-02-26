@@ -68,10 +68,10 @@ print(f'The value from the RK4 method is {testRK:.10g} and the true value is {tr
 x = np.linspace(-4, 4, 1000)
 y = np.tan(x)
 
-plt.plot(x, y)
-plt.xlabel('x')
-plt.ylabel('y')
-plt.show()
+#plt.plot(x, y)
+#plt.xlabel('x')
+#plt.ylabel('y')
+#plt.show()
 
 
 
@@ -96,12 +96,12 @@ for i in narr:
     RKdiff = np.append(RKdiff, RKfinal - RK)
 
 #plot the results
-plt.loglog(harr, abs(Eudiff), label = 'Euler')
-plt.loglog(harr, abs(RKdiff), label = 'Runge-Kutta')
-plt.xlabel('log(step size)')
-plt.ylabel('log(|highest res - predicted|)')
-plt.legend()
-plt.show()
+#plt.loglog(harr, abs(Eudiff), label = 'Euler')
+#plt.loglog(harr, abs(RKdiff), label = 'Runge-Kutta')
+#plt.xlabel('log(step size)')
+#plt.ylabel('log(|highest res - predicted|)')
+#plt.legend()
+#plt.show()
 
 
 #Part e
@@ -130,14 +130,14 @@ v = np.linspace(0, 4e4, 100)
 f = p2(v, 0)
 
 #plot the distribution
-plt.plot(v, f)
-plt.xlabel('v(m/s)')
-plt.ylabel('f(v)')
-plt.show()
+#plt.plot(v, f)
+#plt.xlabel('v(m/s)')
+#plt.ylabel('f(v)')
+#plt.show()
 
 
 
-#part b
+#Part b
 #calculate the minimum velocity
 delE = 10.2    #energy in eV
 E = 10.2 * 1.6022e-19    #energy in J
@@ -147,5 +147,50 @@ vmin = np.sqrt(2 * E / m)    #minimum velocity
 print(f'The minumum velocity of a proton to acheive an energy of {E:.3g} J is {vmin:.3g} m/s')
 
 #integrate from the minimum speed to infinity
-frac = RK4(p2, vmin, 1e10, 0, 1000)
+frac = RK4(p2, vmin, 1e8, 0, 1000)
 print(f'The fraction of atoms able to excite electrons out of the ground state is {frac:.3g}')
+
+
+
+#Part c
+#first look at step size
+#define a range of step sizes over a few magnitudes
+narr2 = np.logspace(2, 5, 50)
+harr2 = 1/narr2
+
+#define the highest resolution case
+RKfinal2 = RK4(p2, vmin, 1e8, 0, narr2[-1])
+
+#calculate the predicted y with each step size
+RKdiff2 = np.array([])
+
+for i in narr2:
+    RK2 = RK4(p2, vmin, 1e8, 0, i)
+    RKdiff2 = np.append(RKdiff2, RKfinal2 - RK2)
+
+#Plot the result
+plt.loglog(harr2, abs(RKdiff2))
+plt.xlabel('log(step size)')
+plt.ylabel('log(|highest res - predicted|)')
+plt.show()
+
+#then look at infinity value
+#define a range of step sizes over a few magnitudes
+inf = np.logspace(7, 13, 50)
+
+
+#define the highest resolution case
+RKfinal3 = RK4(p2, vmin, inf[-1], 0, 1000)
+
+#calculate the predicted y with each step size
+RKdiff3 = np.array([])
+
+for i in inf:
+    RK3 = RK4(p2, vmin, i, 0, 1000)
+    RKdiff3 = np.append(RKdiff3, RKfinal3 - RK3)
+
+#Plot the result
+plt.loglog(inf, abs(RKdiff3))
+plt.xlabel('log(infinity value)')
+plt.ylabel('log(|highest value - predicted|)')
+plt.show()
