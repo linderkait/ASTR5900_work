@@ -116,7 +116,7 @@ print(f'The difference between the highest resolution and true values for RK4 is
 #Problem 2
 
 #define the equation
-def p2(v):
+def p2(v, y):
     #define constants using protons for mass
     m = 1.67262192e-27
     k = 1.380649e-23
@@ -127,10 +127,25 @@ def p2(v):
 #Part a
 #define velocity array and probability density array
 v = np.linspace(0, 4e4, 100)
-f = p2(v)
+f = p2(v, 0)
 
 #plot the distribution
 plt.plot(v, f)
 plt.xlabel('v(m/s)')
 plt.ylabel('f(v)')
 plt.show()
+
+
+
+#part b
+#calculate the minimum velocity
+delE = 10.2    #energy in eV
+E = 10.2 * 1.6022e-19    #energy in J
+m = 1.6726e-27    #mass of a proton
+vmin = np.sqrt(2 * E / m)    #minimum velocity
+
+print(f'The minumum velocity of a proton to acheive an energy of {E:.3g} J is {vmin:.3g} m/s')
+
+#integrate from the minimum speed to infinity
+frac = RK4(p2, vmin, 1e10, 0, 1000)
+print(f'The fraction of atoms able to excite electrons out of the ground state is {frac:.3g}')
