@@ -24,12 +24,16 @@ def euler(f, xi, xf, yi, n):
     while x < xf:
         y += h * f(x, y)
         x += h
+    if x == xf:
+        return y
     else:
+        #make sure the integral ends at the right point
+        h = xf - x
+        y += h * f(x, y)
         return y
 
-
 #test the euler code
-testeu = euler(p1, 0, 1, 0, 5) 
+testeu = euler(p1, 0, 1, 0, 100) 
 true = np.tan(1)
 print(f'The value from the euler method is {testeu:.10g} and the true value is {true:.10g}')
 
@@ -43,23 +47,32 @@ def RK4(f, xi, xf, yi, n):
     h = (xf - xi) / n
     x = xi
     y = yi
-
     #create the loop to do the integration
-    while x < xf:
+    while x < xf :
         k1 = f(x, y)
-        k2 = f(x + h/2, y + (h / 2) * k1)
-        k3 = f(x + h/2, y + (h / 2) * k2)
-        k4 = f(x + h, y + h * k3)
+        k2 = f(x + (h/2), y + ((h/2) * k1))
+        k3 = f(x + (h/2), y + ((h/2) * k2))
+        k4 = f(x + h, y + (h * k3))
 
-        y += (h / 6) * (k1 + 2 * k2 + 2 * k3 + k4)
+        y += (h / 6) * (k1 + (2 * k2) + (2 * k3) + k4)
         x += h
+    if x == xf:
+        return y
     else:
+        #make sure the integral ends at the right point
+        h = xf - x
+        k1 = f(x, y)
+        k2 = f(x + (h/2), y + ((h/2) * k1))
+        k3 = f(x + (h/2), y + ((h/2) * k2))
+        k4 = f(x + h, y + (h * k3))
+
+        y += (h / 6) * (k1 + (2 * k2) + (2 * k3) + k4)
         return y
     
 
 
 #test the RK code
-testRK = RK4(p1, 0, 1, 0, 5)
+testRK = RK4(p1, 0, 1, 0, 100)
 print(f'The value from the RK4 method is {testRK:.10g} and the true value is {true:.10g}')
 
 
@@ -68,16 +81,16 @@ print(f'The value from the RK4 method is {testRK:.10g} and the true value is {tr
 x = np.linspace(-4, 4, 1000)
 y = np.tan(x)
 
-#plt.plot(x, y)
-#plt.xlabel('x')
-#plt.ylabel('y')
-#plt.show()
+plt.plot(x, y)
+plt.xlabel('x')
+plt.ylabel('y')
+plt.show()
 
 
 
 #Part d
 #define a range of step sizes over a few magnitudes
-narr = np.logspace(0, 3, 50)
+narr = np.logspace(1, 3, 50)
 harr = 1/narr
 
 #define the highest resolution case
@@ -96,12 +109,12 @@ for i in narr:
     RKdiff = np.append(RKdiff, RKfinal - RK)
 
 #plot the results
-#plt.loglog(harr, abs(Eudiff), label = 'Euler')
-#plt.loglog(harr, abs(RKdiff), label = 'Runge-Kutta')
-#plt.xlabel('log(step size)')
-#plt.ylabel('log(|highest res - predicted|)')
-#plt.legend()
-#plt.show()
+plt.loglog(harr, abs(Eudiff)/Eufinal, label = 'Euler')
+plt.loglog(harr, abs(RKdiff)/RKfinal, label = 'Runge-Kutta')
+plt.xlabel('log(step size)')
+plt.ylabel('log(|highest res - predicted|/highest res)')
+plt.legend()
+plt.show()
 
 
 #Part e
@@ -130,10 +143,10 @@ v = np.linspace(0, 4e4, 100)
 f = p2(v, 0)
 
 #plot the distribution
-#plt.plot(v, f)
-#plt.xlabel('v(m/s)')
-#plt.ylabel('f(v)')
-#plt.show()
+plt.plot(v, f)
+plt.xlabel('v(m/s)')
+plt.ylabel('f(v)')
+plt.show()
 
 
 
@@ -169,14 +182,14 @@ for i in narr2:
     RKdiff2 = np.append(RKdiff2, RKfinal2 - RK2)
 
 #Plot the result
-plt.loglog(harr2, abs(RKdiff2))
+plt.loglog(harr2, abs(RKdiff2)/RKfinal2)
 plt.xlabel('log(step size)')
-plt.ylabel('log(|highest res - predicted|)')
+plt.ylabel('log(|highest res - predicted|/highest res)')
 plt.show()
 
 #then look at infinity value
 #define a range of step sizes over a few magnitudes
-inf = np.logspace(7, 13, 50)
+inf = np.logspace(7, 12, 50)
 
 
 #define the highest resolution case
@@ -190,7 +203,7 @@ for i in inf:
     RKdiff3 = np.append(RKdiff3, RKfinal3 - RK3)
 
 #Plot the result
-plt.loglog(inf, abs(RKdiff3))
+plt.loglog(inf, abs(RKdiff3)/RKfinal3)
 plt.xlabel('log(infinity value)')
-plt.ylabel('log(|highest value - predicted|)')
+plt.ylabel('log(|highest value - predicted|/highest res)')
 plt.show()
