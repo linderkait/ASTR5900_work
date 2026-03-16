@@ -41,6 +41,7 @@ plt.ylabel('Probability')
 plt.show()
 
 #Part 2c
+#create and plot the function with different trial values
 prob2c5 = bayes(prior, data, binomial, 5, theta)
 prob2c50 = bayes(prior, data, binomial, 50, theta)
 prob2c500 = bayes(prior, data, binomial, 500, theta)
@@ -54,6 +55,7 @@ plt.legend()
 plt.show()
 
 #Part 2d
+#create a loop to run through trials and priors and plot them
 trials = [5, 50, 500]
 for i in trials:
     a = 2
@@ -80,23 +82,50 @@ for i in trials:
 
 
 
+#Problem 3
+#Part a
+#create the dataset
+x = np.random.rand(100)
+y = np.random.rand(100)
+
+r = np.sqrt(x**2 + y**2)
+
+print('The number of points that fall inside the circle is:', sum(r <= 1))
+
+#Part b
+#define a data set of 0 and 1
+circle = np.ones(100)[r <= 1]
+
+#test the data
+a = 2
+b = 5
+prob3 = bayes(prior, circle, binomial, 100, theta)
+
+print('π =',4*theta[np.argmax(prob3)])
+
+#Part c
+#iterate through trials and priors and print results
+for i in [5, 50, 500]:
+    x = np.random.rand(i)
+    y = np.random.rand(i)
+
+    r = np.sqrt(x**2 + y**2)
+    circle = np.ones(i)[r <= 1]
+
+    a = 2
+    b = 5
+    prob3 = bayes(prior, circle, binomial, i, theta)
+    print('rel_err =',abs(np.pi - 4 * theta[np.argmax(prob3)]) / np.pi, 'for Beta(2,5) and',str(i),'points')
 
 
-
-#test several datasets
-#for i in [5, 50, 500]:
-    #x = np.random.rand(i)
-    #y = np.random.rand(i)
-
-    #r = np.sqrt(x**2 + y**2)
+    a = 5
+    b = 7
+    prob3 = bayes(prior, circle, binomial, i, theta)
+    print('rel_err =',abs(np.pi - 4 * theta[np.argmax(prob3)]) / np.pi, 'for Beta(5,7) and',str(i),'points')
 
 
-    #prob = L(r, i, theta) * prior(2, 2, theta)
+    a = 1
+    b = 1
+    prob3 = bayes(prior, circle, binomial, i, theta)
+    print('rel_err =',abs(np.pi - 4 * theta[np.argmax(prob3)]) / np.pi, 'for Beta(1,1) and',str(i),'points')
 
-    #print the value of pi/4 and plot the distribution
-    #print(theta[np.argmax(prob)])
-    #plt.plot(theta, prob)
-    #plt.xlabel('$\pi$/4')
-    #plt.ylabel('Probability')
-    #plt.title("number of points: "+str(i))
-    #plt.show()
