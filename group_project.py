@@ -33,12 +33,50 @@ data = np.loadtxt('data.txt', dtype=int)
 #run and plot the function
 a = 2
 b = 5
-prob1 = bayes(prior, data, binomial, 500, theta)
+prob2b = bayes(prior, data, binomial, 500, theta)
 
-plt.plot(theta, prob1)
+plt.plot(theta, prob2b)
 plt.xlabel(r'$\theta$')
 plt.ylabel('Probability')
 plt.show()
+
+#Part 2c
+prob2c5 = bayes(prior, data, binomial, 5, theta)
+prob2c50 = bayes(prior, data, binomial, 50, theta)
+prob2c500 = bayes(prior, data, binomial, 500, theta)
+
+plt.plot(theta, prob2c5, label ="5 points")
+plt.plot(theta, prob2c50, label ="50 points")
+plt.plot(theta, prob2c500, label ="500 points")
+plt.xlabel(r'$\theta$')
+plt.ylabel('Probability')
+plt.legend()
+plt.show()
+
+#Part 2d
+trials = [5, 50, 500]
+for i in trials:
+    a = 2
+    b = 5
+    prob2d = bayes(prior, data, binomial, i, theta)
+
+    a = 5
+    b = 7
+    prob2d1 = bayes(prior, data, binomial, i, theta)
+
+    a = 1
+    b = 1
+    prob2d2 = bayes(prior, data, binomial, i, theta)
+
+    plt.plot(theta, prob2d, label ="Beta(2,5)")
+    plt.plot(theta, prob2d1, label ="Beta(5,7)")
+    plt.plot(theta, prob2d2, label ="Beta(1,1)")
+    plt.xlabel(r'$\theta$')
+    plt.ylabel('Probability')
+    plt.title("number of points: "+str(i))
+    plt.legend()
+    plt.show()
+
 
 
 
