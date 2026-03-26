@@ -1,9 +1,7 @@
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-from matplotlib.animation import FFMpegWriter
-
-plt.rcParams['animation.ffmpeg_path'] = r'C:\Users\lizzi\ffmpeg-8.1'
 
 plt.rcParams['font.size'] = 14
 
@@ -79,11 +77,12 @@ def euler(frame):
     ay = a_tot * (y / r)    #acceleration in the y direction
 
     #use eulers method to find position and velocity
+    x += delt * vx
+    y += delt * vy
+    
     vx += delt * ax
     vy += delt * ay
 
-    x += delt * vx
-    y += delt * vy
 
         #redefine the state of the system
     state['x'] = x
@@ -105,7 +104,7 @@ x0 = 1
 y0 = 0
 r0 = np.sqrt(x0**2 + y0**2)
 
-G = 6.674e-11
+G = 4 * np.pi**2
 M = 1 
 
 v_tot = np.sqrt(G * M / r0)    #velocity of orbit
@@ -118,8 +117,8 @@ n = int(t/delt)    #total number of steps
 
 #define the initial state of the system
 state = {'x':x0, 'y':y0, 'vx':vx0, 'vy':vy0}
-path_x = []
-path_y = []
+path_x = [x0]
+path_y = [y0]
 
 #setup animation
 fig, ax = plt.subplots()
@@ -128,9 +127,46 @@ ax.set_ylim(-1.5*r0, 1.5*r0)
 ax.set_aspect('equal')
 ax.grid(True)
 line, = ax.plot([], [], lw = 1)
-point, = ax.plot([], [], ms = 5)
+point, = ax.plot([], [], 'o', ms = 10)
 
-two_ani = FuncAnimation(fig, twobody, frames = n, interval = 10, blit = True)
+#animate twobody
+two_ani = FuncAnimation(fig, twobody, frames = n, blit=False)
 
 #save animation
-two_ani.save('p1_twobody.mp4', writer = 'ffmpeg')
+two_ani.save('p1_twobody.mp4', writer = 'ffmpeg', fps=30, dpi=100)
+
+#define initial values
+x0 = 1
+y0 = 0
+r0 = np.sqrt(x0**2 + y0**2)
+
+G = 4 * np.pi**2
+M = 1 
+
+v_tot = np.sqrt(G * M / r0)    #velocity of orbit
+vx0 = v_tot * (y0 / r0)    #velocity in the x direction
+vy0 = v_tot * (x0 / r0)    #velocity in the y directon
+
+t = 9   #total time to run simulation in years
+delt = 0.01    #timestep 
+n = int(t/delt)    #total number of steps
+
+#define the initial state of the system
+state = {'x':x0, 'y':y0, 'vx':vx0, 'vy':vy0}
+path_x = [x0]
+path_y = [y0]
+
+#setup animation
+fig, ax = plt.subplots()
+ax.set_xlim(-4*r0, 4*r0)
+ax.set_ylim(-4*r0, 4*r0)
+ax.set_aspect('equal')
+ax.grid(True)
+line, = ax.plot([], [], lw = 1)
+point, = ax.plot([], [], 'o', ms = 10)
+
+#animate euler
+eul_ani = FuncAnimation(fig, euler, frames = n, blit=False)
+
+#save animation
+eul_ani.save('p1_euler.mp4', writer = 'ffmpeg', fps=30, dpi=100)
