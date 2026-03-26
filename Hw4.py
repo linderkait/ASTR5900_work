@@ -1,20 +1,26 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-from functools import partial
+from matplotlib.animation import FFMpegWriter
+
+plt.rcParams['animation.ffmpeg_path'] = r'C:\Users\lizzi\ffmpeg-8.1'
+
+plt.rcParams['font.size'] = 14
 
 #Problem 1
 #Part a
-#define a two body code
-def twobody(frame, x, y, vx, vy):
-    #x and y are the initial position coordinates, vx and vy are initial velocityis, delt is the time step. 
+#define a two body code to be animated
+def twobody(frame):
     #A circular orbit is assumed.
 
-    #define some values
-    G = 6.674e-11    #gravitational constant
-    M = 1    #mass of the object being orbited
-    r = np.sqrt(x**2 + y**2)    #radius of orbit
-    delt = 0.05
+    #get state of system
+    x = state['x']
+    y = state['y']
+    vx = state['vx']
+    vy = state['vy']
+
+    #define radius
+    r = np.sqrt(x**2 + y**2)
 
     #calculate acceleration
     a_tot = -G * M / r ** 2    #gravitational acceleration due to central object
@@ -38,19 +44,34 @@ def twobody(frame, x, y, vx, vy):
 
     #calculate the velocity full step
     vx += 0.5 * ax * delt
-    vy += 0.5 * ax * delt
+    vy += 0.5 * ay * delt
 
-    return x, y, vx, vy
+    #redefine the state of the system
+    state['x'] = x
+    state['y'] = y
+    state['vx'] = vx
+    state['vy'] = vy
 
-def euler(frame, x, y, vx, vy):
-    #x and y are the initial position coordinates, vx and vy are initial velocityis, delt is the time step. 
+    #define the path of the satellite
+    path_x.append(x)
+    path_y.append(y)
+
+    #update plot
+    line.set_data(path_x, path_y)
+    point.set_data([x], [y])
+    return line, point
+
+def euler(frame):
     #A circular orbit is assumed.
 
-    #define some values
-    G = 6.674e-11    #gravitational constant
-    M = 1    #mass of the object being orbited
-    r = np.sqrt(x**2 + y**2)    #radius of orbit
-    delt = 0.05
+    #get state of system
+    x = state['x']
+    y = state['y']
+    vx = state['vx']
+    vy = state['vy']
+
+    #define radius
+    r = np.sqrt(x**2 + y**2)
 
     #calculate acceleration
     a_tot = -G * M / r ** 2    #gravitational acceleration due to central object
@@ -63,38 +84,53 @@ def euler(frame, x, y, vx, vy):
 
     x += delt * vx
     y += delt * vy
-    return x, y, vx, vy
 
+        #redefine the state of the system
+    state['x'] = x
+    state['y'] = y
+    state['vx'] = vx
+    state['vy'] = vy
+    
+    #define the path of the satellite
+    path_x.append(x)
+    path_y.append(y)
 
-
-
+    #update plot
+    line.set_data(path_x, path_y)
+    point.set_data([x], [y])
+    return line, point
 
 #define initial values
 x0 = 1
 y0 = 0
-r = np.sqrt(x0**2 + y0**2)
+r0 = np.sqrt(x0**2 + y0**2)
 
 G = 6.674e-11
 M = 1 
 
-v_tot = np.sqrt(G * M / r)    #velocity of orbit
-vx0 = v_tot * (y0 / r)    #velocity in the x direction
-vy0 = v_tot * (x0 / r)    #velocity in the y directon
+v_tot = np.sqrt(G * M / r0)    #velocity of orbit
+vx0 = v_tot * (y0 / r0)    #velocity in the x direction
+vy0 = v_tot * (x0 / r0)    #velocity in the y directon
 
 t = 3    #total time to run simulation in years
-delt = 0.05    #timestep 
-n = t/delt    #total number of steps
+delt = 0.01    #timestep 
+n = int(t/delt)    #total number of steps
 
-#make animation
+#define the initial state of the system
+state = {'x':x0, 'y':y0, 'vx':vx0, 'vy':vy0}
+path_x = []
+path_y = []
+
+#setup animation
 fig, ax = plt.subplots()
+ax.set_xlim(-1.5*r0, 1.5*r0)
+ax.set_ylim(-1.5*r0, 1.5*r0)
+ax.set_aspect('equal')
+ax.grid(True)
+line, = ax.plot([], [], lw = 1)
+point, = ax.plot([], [], ms = 5)
 
-twobody, = ax.plot([], [])
+two_ani = FuncAnimation(fig, twobody, frames = n, interval = 10, blit = True)
 
-def init():
-    twobody.set_data([], [], [], [])
-    return twobody
-
-
-two_ani = FuncAnimation(fig, partial(twobody, x = x0, y = y0, vx = vx0, vy = vy0), save_count = int(t/delt), init_func = init)
-two_ani.to_jshtml()
-plt.show()
+#save animation
+two_ani.save('p1_twobody.mp4', writer = 'ffmpeg')
