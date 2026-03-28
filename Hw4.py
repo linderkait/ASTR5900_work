@@ -166,10 +166,10 @@ line, = ax.plot([], [], lw = 1)
 point, = ax.plot([], [], 'o', ms = 10)
 
 #animate euler
-eul_ani = FuncAnimation(fig, eulerani, frames = n, blit=False)
+#eul_ani = FuncAnimation(fig, eulerani, frames = n, blit=False)
 
 #save animation
-eul_ani.save('p2_euler.mp4', writer = 'ffmpeg', fps=300, dpi=100)
+#eul_ani.save('p2_euler.mp4', writer = 'ffmpeg', fps=300, dpi=100)
 
 
 
@@ -267,18 +267,18 @@ v_two, E_two = twobody(x0, y0, vx0, vy0, t, delt)
 v_eul, E_eul = euler(x0, y0, vx0, vy0, t, delt)
 t_arr = np.arange(0, 3.01, 0.01)
 
-#plt.plot(t_arr, v_two, label='twobody')
-#plt.plot(t_arr, v_eul, label='euler')
-#plt.xlabel("time (yr)")
-#plt.ylabel('speed (AU/yr)')
-#plt.legend()
+plt.plot(t_arr, v_two, label='twobody')
+plt.plot(t_arr, v_eul, label='euler')
+plt.xlabel("time (yr)")
+plt.ylabel('speed (AU/yr)')
+plt.legend()
 #plt.show()
 
-#plt.plot(t_arr, E_two, label='twobody')
-#plt.plot(t_arr, E_eul, label='euler')
-#plt.xlabel("time (yr)")
-#plt.ylabel('Energy (AU^2/yr^2)')
-#plt.legend()
+plt.plot(t_arr, E_two, label='twobody')
+plt.plot(t_arr, E_eul, label='euler')
+plt.xlabel("time (yr)")
+plt.ylabel('Energy (AU^2/yr^2)')
+plt.legend()
 #plt.show()
 
 #Problem 2b
@@ -291,18 +291,162 @@ vy0 = v_tot * (x0 / r0)    #velocity in the y directon
 
 t = 4    #total time to run simulation in years
 delt = 0.01    #timestep 
+t_arr = np.arange(0, 4.01, 0.01)
 
 v_twob, E_twob = twobody(x0, y0, vx0, vy0, t, delt)
 v_eulb, E_eulb = euler(x0, y0, vx0, vy0, t, delt)
 
-#plt.plot(t_arr, E_twob, label='twobody')
-#plt.xlabel("time (yr)")
-#plt.ylabel('Energy (AU^2/yr^2)')
-#plt.legend()
+plt.plot(t_arr, E_twob, label='twobody')
+plt.xlabel("time (yr)")
+plt.ylabel('Energy (AU^2/yr^2)')
+plt.legend()
 #plt.show()
 
-#plt.plot(t_arr, E_eulb, label='euler')
-#plt.xlabel("time (yr)")
-#plt.ylabel('Energy (AU^2/yr^2)')
-#plt.legend()
+plt.plot(t_arr, E_eulb, label='euler')
+plt.xlabel("time (yr)")
+plt.ylabel('Energy (AU^2/yr^2)')
+plt.legend()
 #plt.show()
+
+
+
+#Problem 3
+def twobodyanijup(frame):
+    #A circular orbit is assumed
+    #create an updating title
+
+
+    #get state of system
+    x = state['x']
+    y = state['y']
+    vx = state['vx']
+    vy = state['vy']
+    xj = state['xj']    #j indicates values for jupyter
+    yj = state['yj']
+    vxj = state['vxj']
+    vyj = state['vyj']
+    t_current = state['t_current'] 
+    v_current = state['v_current']
+
+    #define radius
+    r = np.sqrt(x**2 + y**2)
+    rj = np.sqrt(xj**2 + yj**2)
+    rjs = np.sqrt((xj-x)**2 + (yj-y)**2)    #js indicates jupyer in relation to the spacecraft
+
+    #calculate acceleration
+    aj_tot = -G * M / rj ** 2 
+    axj = aj_tot * (xj / rj)
+    ayj = aj_tot * (yj / rj)
+    a_tot = -G * M / r ** 2
+    ajs_tot =  -G * Mj / rjs ** 2
+    ax = a_tot * (x / r) + ajs_tot * ((x-xj) / rjs)
+    ay = a_tot * (y / r) + ajs_tot * ((y-yj) / rjs)
+
+
+    #Calculate the velocity half step
+    vx += 0.5 * ax * delt
+    vy += 0.5 * ay * delt
+    vxj += 0.5 * axj * delt
+    vyj += 0.5 * ayj * delt
+
+    #calculate the position full step
+    x += vx * delt
+    y += vy * delt
+    xj += vxj * delt
+    yj += vyj * delt
+
+    #recalculate values
+    r = np.sqrt(x**2 + y**2) 
+    rj = np.sqrt(xj**2 + yj**2)
+    rjs = np.sqrt((xj-x)**2 + (yj-y)**2)
+
+    aj_tot = -G * M / rj ** 2 
+    axj = aj_tot * (xj / rj)
+    ayj = aj_tot * (yj / rj)
+    a_tot = -G * M / r ** 2
+    ajs_tot =  -G * Mj / rjs ** 2
+    ax = a_tot * (x / r) + ajs_tot * ((x-xj) / rjs)
+    ay = a_tot * (y / r) + ajs_tot * ((y-yj) / rjs)
+
+
+    #calculate the velocity full step
+    vx += 0.5 * ax * delt
+    vy += 0.5 * ay * delt
+    vxj += 0.5 * axj * delt
+    vyj += 0.5 * ayj * delt
+
+    #add time and velocity information
+    t_current += delt * 12    #time in months
+    v_current = np.sqrt(vx**2 + vy**2) * 4.743    #velocity in km/s
+
+    #redefine the state of the system
+    state['x'] = x
+    state['y'] = y
+    state['vx'] = vx
+    state['vy'] = vy
+    state['xj'] = xj
+    state['yj'] = yj
+    state['vxj'] = vxj
+    state['vyj'] = vyj
+    state['t_current'] = t_current
+    state['t_current'] = t_current
+
+    #define the path of the satellite
+    path_x.append(x)
+    path_y.append(y)
+
+    #update plot
+    title.set_text(f'Time: {t_current:.2g} months, Velocity: {v_current:.3g} km/s')
+    line.set_data(path_x, path_y)
+    point.set_data([x], [y])
+    jupiter.set_data([xj], [yj])
+    return line, point, jupiter, title
+
+#define initial values
+x0 = 1
+y0 = 0
+r0 = np.sqrt(x0**2 + y0**2)
+
+#determine initial position for jupyter
+rj0 = 5.2
+xj0 = rj0 * np.cos(np.deg2rad(97.5))
+yj0 = rj0 * np.sin(np.deg2rad(97.5))
+
+G = 4 * np.pi**2
+M = 1 
+Mj = .001
+
+v_tot = np.sqrt(G * M / r0) + 11.2/4.743  #add earths escape velocity to total probe velocity    
+vx0 = v_tot * (y0 / r0)    
+vy0 = v_tot * (x0 / r0)    
+vj_tot = np.sqrt(G * M / rj0)    
+vxj0 = -vj_tot * (yj0 / rj0)    
+vyj0 = vj_tot * (xj0 / rj0)    
+
+t = 3   #total time to run simulation in years
+delt = 0.01    #timestep 
+n = int(t/delt)    #total number of steps
+t0 = 0
+
+#define the initial state of the system
+state = {'x':x0, 'y':y0, 'vx':vx0, 'vy':vy0, 'xj':xj0, 'yj':yj0, 'vxj':vxj0, 'vyj':vyj0, 't_current':t0, 'v_current':4.743}
+path_x = [x0]
+path_y = [y0]
+
+#setup animation
+fig, ax = plt.subplots()
+ax.set_xlim(-6*r0, 6*r0)
+ax.set_ylim(-6*r0, 6*r0)
+ax.set_aspect('equal')
+ax.grid(True)
+title = ax.set_title(f'Time: {0} months, Velocity: {4.743} km/s')
+line, = ax.plot([], [], lw = 1)
+point, = ax.plot([], [], 'o', ms = 10, label = 'Voyager 2')
+jupiter, = ax.plot([], [], 'o', ms = 10, label = 'Jupiter')
+ax.legend()
+
+#animate twobody
+#two_ani = FuncAnimation(fig, twobodyanijup, frames = n, blit=False)
+
+#save animation
+#two_ani.save('p3_twobody.mp4', writer = 'ffmpeg', fps=30, dpi=100)
