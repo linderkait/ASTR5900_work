@@ -84,7 +84,7 @@ def eulerani(frame):
     vy += delt * ay
 
 
-        #redefine the state of the system
+    #redefine the state of the system
     state['x'] = x
     state['y'] = y
     state['vx'] = vx
@@ -130,10 +130,10 @@ line, = ax.plot([], [], lw = 1)
 point, = ax.plot([], [], 'o', ms = 10)
 
 #animate twobody
-#two_ani = FuncAnimation(fig, twobodyani, frames = n, blit=False)
+two_ani = FuncAnimation(fig, twobodyani, frames = n, blit=False)
 
 #save animation
-#two_ani.save('p2_twobody.mp4', writer = 'ffmpeg', fps=30, dpi=100)
+two_ani.save('p2_twobody.mp4', writer = 'ffmpeg', fps=30, dpi=100)
 
 #define initial values
 x0 = 1
@@ -166,10 +166,10 @@ line, = ax.plot([], [], lw = 1)
 point, = ax.plot([], [], 'o', ms = 10)
 
 #animate euler
-#eul_ani = FuncAnimation(fig, eulerani, frames = n, blit=False)
+eul_ani = FuncAnimation(fig, eulerani, frames = n, blit=False)
 
 #save animation
-#eul_ani.save('p2_euler.mp4', writer = 'ffmpeg', fps=300, dpi=100)
+eul_ani.save('p2_euler.mp4', writer = 'ffmpeg', fps=300, dpi=100)
 
 
 
@@ -177,10 +177,10 @@ point, = ax.plot([], [], 'o', ms = 10)
 def twobody(x, y, vx, vy, t, delt):
     #where x and y are the initial positions and vx and vy are initial velocities. t is the
     #total time to integrate over and delt is the step size
-    speed = np.array([np.sqrt(vx**2 + vy**2)])
+    speed = np.array([np.sqrt(vx**2 + vy**2)])    #the total speed of the object
 
     r = np.sqrt(x**2 + y**2)
-    E = np.array([1/2 * speed ** 2 - G * M / r])
+    E = np.array([1/2 * speed ** 2 - G * M / r])    #the total specific energy
 
     n = int(t/delt)
 
@@ -210,6 +210,7 @@ def twobody(x, y, vx, vy, t, delt):
         vy += 0.5 * ay * delt
 
         vtot = np.sqrt(vx**2 + vy**2)
+
         #calculate speed and energy
         speed = np.append(speed, vtot)
         E = np.append(E, 1/2 * vtot ** 2 - G * M / r)
@@ -218,11 +219,11 @@ def twobody(x, y, vx, vy, t, delt):
 def euler(x, y, vx, vy, t, delt):
     #where x and y are the initial positions and vx and vy are initial velocities. t is the
     #total time to integrate over and delt is the step size
-    speed = np.array([np.sqrt(vx**2 + vy**2)])
+    speed = np.array([np.sqrt(vx**2 + vy**2)])    #the total speed of the system
 
     r = np.sqrt(x**2 + y**2)
 
-    E = np.array([1/2 * speed ** 2 - G * M / r])
+    E = np.array([1/2 * speed ** 2 - G * M / r])    #the total specific energy
 
     n = int(t/delt)
 
@@ -267,19 +268,20 @@ v_two, E_two = twobody(x0, y0, vx0, vy0, t, delt)
 v_eul, E_eul = euler(x0, y0, vx0, vy0, t, delt)
 t_arr = np.arange(0, 3.01, 0.01)
 
+#plot the functions
 plt.plot(t_arr, v_two, label='twobody')
 plt.plot(t_arr, v_eul, label='euler')
 plt.xlabel("time (yr)")
 plt.ylabel('speed (AU/yr)')
 plt.legend()
-#plt.show()
+plt.show()
 
 plt.plot(t_arr, E_two, label='twobody')
 plt.plot(t_arr, E_eul, label='euler')
 plt.xlabel("time (yr)")
 plt.ylabel('Energy (AU^2/yr^2)')
 plt.legend()
-#plt.show()
+plt.show()
 
 #Problem 2b
 
@@ -296,25 +298,24 @@ t_arr = np.arange(0, 4.01, 0.01)
 v_twob, E_twob = twobody(x0, y0, vx0, vy0, t, delt)
 v_eulb, E_eulb = euler(x0, y0, vx0, vy0, t, delt)
 
+#plot the functions
 plt.plot(t_arr, E_twob, label='twobody')
 plt.xlabel("time (yr)")
 plt.ylabel('Energy (AU^2/yr^2)')
 plt.legend()
-#plt.show()
+plt.show()
 
 plt.plot(t_arr, E_eulb, label='euler')
 plt.xlabel("time (yr)")
 plt.ylabel('Energy (AU^2/yr^2)')
 plt.legend()
-#plt.show()
+plt.show()
 
 
 
 #Problem 3
 def twobodyanijup(frame):
     #A circular orbit is assumed
-    #create an updating title
-
 
     #get state of system
     x = state['x']
@@ -446,7 +447,111 @@ jupiter, = ax.plot([], [], 'o', ms = 10, label = 'Jupiter')
 ax.legend()
 
 #animate twobody
-#two_ani = FuncAnimation(fig, twobodyanijup, frames = n, blit=False)
+two_ani = FuncAnimation(fig, twobodyanijup, frames = n, blit=False)
 
 #save animation
-#two_ani.save('p3_twobody.mp4', writer = 'ffmpeg', fps=30, dpi=100)
+two_ani.save('p3_twobody.mp4', writer = 'ffmpeg', fps=30, dpi=100)
+
+
+#part b
+def twobodyjup(x, y, vx, vy, xj, yj, vxj, vyj, t, delt):
+    #A circular orbit is assumed
+
+    v_current = np.array([np.sqrt(vx**2 + vy**2) * 4.743])
+    rjup = np.array([np.sqrt((xj-x)**2 + (yj-y)**2)])    #the distance to jupiter
+
+    n = int(t/delt)
+
+    for i in range(n):
+        #define radius
+        r = np.sqrt(x**2 + y**2)
+        rj = np.sqrt(xj**2 + yj**2)
+        rjs = np.sqrt((xj-x)**2 + (yj-y)**2)    #js indicates jupyer in relation to the spacecraft
+
+        #calculate acceleration
+        aj_tot = -G * M / rj ** 2 
+        axj = aj_tot * (xj / rj)
+        ayj = aj_tot * (yj / rj)
+        a_tot = -G * M / r ** 2
+        ajs_tot =  -G * Mj / rjs ** 2
+        ax = a_tot * (x / r) + ajs_tot * ((x-xj) / rjs)
+        ay = a_tot * (y / r) + ajs_tot * ((y-yj) / rjs)
+
+
+        #Calculate the velocity half step
+        vx += 0.5 * ax * delt
+        vy += 0.5 * ay * delt
+        vxj += 0.5 * axj * delt
+        vyj += 0.5 * ayj * delt
+
+        #calculate the position full step
+        x += vx * delt
+        y += vy * delt
+        xj += vxj * delt
+        yj += vyj * delt
+
+        #recalculate values
+        r = np.sqrt(x**2 + y**2) 
+        rj = np.sqrt(xj**2 + yj**2)
+        rjs = np.sqrt((xj-x)**2 + (yj-y)**2)
+
+        aj_tot = -G * M / rj ** 2 
+        axj = aj_tot * (xj / rj)
+        ayj = aj_tot * (yj / rj)
+        a_tot = -G * M / r ** 2
+        ajs_tot =  -G * Mj / rjs ** 2
+        ax = a_tot * (x / r) + ajs_tot * ((x-xj) / rjs)
+        ay = a_tot * (y / r) + ajs_tot * ((y-yj) / rjs)
+
+
+        #calculate the velocity full step
+        vx += 0.5 * ax * delt
+        vy += 0.5 * ay * delt
+        vxj += 0.5 * axj * delt
+        vyj += 0.5 * ayj * delt
+
+        #add time and velocity information
+        v_current = np.append(v_current, np.sqrt(vx**2 + vy**2) * 4.743)    #velocity in km/s
+        rjup = np.append(rjup, np.sqrt((xj-x)**2 + (yj-y)**2))
+    return v_current, rjup
+
+#define initial values
+x0 = 1
+y0 = 0
+r0 = np.sqrt(x0**2 + y0**2)
+
+rj0 = 5.2
+xj0 = rj0 * np.cos(np.deg2rad(97.5))
+yj0 = rj0 * np.sin(np.deg2rad(97.5))
+
+G = 4 * np.pi**2
+M = 1 
+Mj = .001
+
+v_tot = np.sqrt(G * M / r0) + 11.2/4.743 
+vx0 = v_tot * (y0 / r0)    
+vy0 = v_tot * (x0 / r0)    
+vj_tot = np.sqrt(G * M / rj0)    
+vxj0 = -vj_tot * (yj0 / rj0)    
+vyj0 = vj_tot * (xj0 / rj0)    
+
+t = 3
+delt = 0.01
+
+t_arr = np.arange(0, 3.01, 0.01)
+
+#run function
+speed, rjup = twobodyjup(x0, y0, vx0, vy0, xj0, yj0, vxj0, vyj0, t, delt)
+
+#plot the speed vs time
+plt.plot(t_arr, speed)
+plt.xlabel('time (yr)')
+plt.ylabel('speed (km/s)')
+plt.show()
+
+
+#find closest distance and time
+r_close = np.min(rjup)
+t_close = t_arr[np.argmin(rjup)]
+
+print(f'The closest distance to jupiter was {r_close:.3g} AU and it occured at {t_close:.3g} years after launch')
