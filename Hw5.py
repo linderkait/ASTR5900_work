@@ -9,7 +9,7 @@ import time
 def DFT(f, N, xi, xf):
     #the function takes a function f(x), the number of steps to use N and the range to be integrated xi to xf and outputs the 
     #Fourier transform F(k)
-    x = np.linspace(xi, xf, N)
+    x = np.linspace(xi, xf, int(N))
     n = np.arange(N)
     m = np.arange(N)
     transform = 0
@@ -140,3 +140,32 @@ plt.show()
 
 
 #Problem 2
+#calculate the DFT of the initial distribution
+alpha = 0.005
+delt = 0.001
+T = 5
+N = int(T/delt)
+
+heati = DFT(f, N, 0, 1)
+
+#integrate with scipy runge-kutta code
+k_all = 2 * np.pi * np.arange(N)
+dudt = lambda t, u:-alpha * k ** 2 * u
+
+heat_kt = np.array([])
+for i in np.arange(N):
+    k = k_all[i]
+    u = heati[i]
+    heattrans = scipy.integrate.RK45(dudt, t0 = 0, y0 = u, t_bound = T, step_size = delt)
+    heat_kt = np.concatenate(heat_kt, heattrans)
+#Inverse transform
+heatf = iDFT(heattrans.y, N)
+
+#plot the results
+x = np.linspace(0, 1, N)
+
+plt.pcolormesh(x, heattrans.t, np.abs(heatf))
+plt.xlabel('Position')
+plt.ylabel('time')
+plt.colorbar(label = 'heat')
+plt.show()
