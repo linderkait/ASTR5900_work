@@ -32,7 +32,7 @@ f = lambda x: np.exp(-50 * (x - 0.5) ** 2)
 xi = 0
 xf = 1
 L = xf - xi
-N = np.array([5, 10, 20])
+N = np.array([10, 20, 50])
 T1 = DFT(f, N[0], xi, xf)
 k1 = 2 * np.pi * np.arange(N[0]) / L
 
@@ -43,15 +43,19 @@ T3 = DFT(f, N[2], xi, xf)
 k3 = 2 * np.pi * np.arange(N[2]) / L
 
 #calculate the analytical result
-ftrue = lambda k: np.exp((-100j * k + k ** 2) / 200) * np.sqrt(np.pi / 50)
+ftrue = lambda k: np.exp((-100j * k - k ** 2) / 200) * np.sqrt(np.pi / 50)
 
 Ttrue = ftrue(k3)
 
 #plot the transforms
-plt.plot(k1, T1, label = f'N = {N[0]}')
-plt.plot(k2, T2, label = f'N = {N[1]}')
-plt.plot(k3, T3, label = f'N = {N[2]}')
-plt.plot(k3, Ttrue, label = 'analytical result')
+plt.plot(k1, np.abs(T1), label = f'N = {N[0]}')
+plt.plot(k2, np.abs(T2), label = f'N = {N[1]}')
+plt.plot(k3, np.abs(T3), label = f'N = {N[2]}')
+plt.plot(k3, np.abs(Ttrue), label = 'analytical result')
+plt.title("Fourier Transform")
+plt.xlabel('F(k)')
+plt.ylabel('k')
+plt.legend()
 plt.show()
 
 #inverse the results
@@ -68,3 +72,14 @@ x3 = np.linspace(xi, xf, N[2])
 iFtrue = lambda x: np.exp(-50 * (x - 0.5) ** 2)
 
 iTtrue = iFtrue(x3)
+
+#Plot the inverses
+plt.plot(x1, iT1, label = f'N = {N[0]}')
+plt.plot(x2, iT2, label = f'N = {N[1]}')
+plt.plot(x3, iT3, label = f'N = {N[2]}')
+plt.plot(x3, iTtrue, label = 'Origional Function')
+plt.title("Inverse Fourier Transform")
+plt.xlabel('f(x)')
+plt.ylabel('x')
+plt.legend()
+plt.show()
