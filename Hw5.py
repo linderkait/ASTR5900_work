@@ -144,27 +144,24 @@ plt.show()
 alpha = 0.005
 delt = 0.001
 T = 5
-N = int(T/delt)
+N = 100
 
 heati = DFT(f, N, 0, 1)
 
 #integrate with scipy runge-kutta code
-k_all = 2 * np.pi * np.arange(N)
+k = 2 * np.pi * np.arange(N)
 dudt = lambda t, u:-alpha * k ** 2 * u
 
-heat_kt = np.array([])
-for i in np.arange(N):
-    k = k_all[i]
-    u = heati[i]
-    heattrans = scipy.integrate.RK45(dudt, t0 = 0, y0 = u, t_bound = T, step_size = delt)
-    heat_kt = np.concatenate(heat_kt, heattrans)
-#Inverse transform
-heatf = iDFT(heattrans.y, N)
+heattrans = scipy.integrate.solve_ivp(dudt, [0, T], heati, t_eval = np.arange(0, T, delt), method = 'RK45')
+
+#return to position space
+heat_xt = np.array([iDFT(heattrans.y[:,i], N) for i in range(len(heattrans.t))])
+print(np.abs(np.sum(heat_xt, axis = 1)))
 
 #plot the results
 x = np.linspace(0, 1, N)
 
-plt.pcolormesh(x, heattrans.t, np.abs(heatf))
+plt.pcolormesh(x, heattrans.t, np.abs(heat_xt))
 plt.xlabel('Position')
 plt.ylabel('time')
 plt.colorbar(label = 'heat')
